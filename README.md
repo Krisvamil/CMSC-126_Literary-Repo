@@ -1,4 +1,4 @@
-## literary-repo
+## CMSC 126_Literary-Repo
 
 A lightweight, framework-free PHP literary repository for authors and readers to publish, browse, and comment on works. It uses PSR-4 autoloading, simple routing, MVC-style models/controllers/views, transactional migrations, file-based caching/logging, and an in-memory SQLite test suite.
 
@@ -17,8 +17,8 @@ A lightweight, framework-free PHP literary repository for authors and readers to
 
 1. **Clone the repo**  
    ```bash
-   git clone https://github.com/yourname/literary-repo.git
-   cd literary-repo
+   git clone https://github.com/Krisvamil/CMSC 126_Literary-Repo.git
+   cd CMSC 126_Literary-Repo
 
 2. **Install Dependencies**
     ```bash
