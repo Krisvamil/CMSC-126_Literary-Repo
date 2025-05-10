@@ -1,0 +1,39 @@
+/* dashboard.css */
+.dashboard {
+  text-align: center;
+  margin: 3rem auto;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard h1 {
+  font-family: Georgia, serif;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--color-accent);
+}
+
+.dashboard p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  max-width: 600px;
+  margin: auto;
+}
+
+.dashboard-nav a {
+  background: var(--color-light);
+  padding: 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background var(--transition);
+}
+
+.dashboard-nav a:hover {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}

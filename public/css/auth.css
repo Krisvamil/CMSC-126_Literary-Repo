@@ -1,0 +1,36 @@
+/* auth.css */
+.auth-container {
+  max-width: 400px;
+  margin: 4rem auto;               /* vertical rhythm via rem */
+  padding: 2rem;
+  background: #fffaf0;              /* light cream */
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+}
+
+.auth-container h1 {
+  font-family: Georgia, serif;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--color-accent);
+}
+
+.auth-container form label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+  font-weight: bold;
+}
+
+.auth-container form input[type="text"],
+.auth-container form input[type="password"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+}
+
+.auth-container form button {
+  margin-top: 1.5rem;
+  width: 100%;
+}
