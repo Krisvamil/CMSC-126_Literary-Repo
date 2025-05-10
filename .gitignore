@@ -1,0 +1,30 @@
+# Environment
+.env
+.env.*.local
+
+# Composer
+/vendor/
+
+# PHPStorm, VSCode
+/.idea/
+/.vscode/
+
+# Node modules (if you ever add front-end deps)
+/node_modules/
+
+# Public uploads
+/public/uploads/
+
+# Logs and sessions
+/storage/logs/
+/storage/sessions/
+
+# Cache
+/storage/cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHPUnit result caches
+.phpunit.result.cache
