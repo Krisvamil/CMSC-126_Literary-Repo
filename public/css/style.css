@@ -1,0 +1,123 @@
+/* style.css */
+/* ---------------------------- */
+/* Variables & Base Reset       */
+/* ---------------------------- */
+:root {
+  --color-bg: #F3EDE0;
+  --color-text: #3B2F2F;
+  --color-primary: #A9916B;
+  --color-accent: #6B7A40;
+  --color-light: #E3D6AB;
+  --space-unit: 1rem;
+  --transition: 0.3s ease-in-out;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--color-bg);
+  background-image: url('../images/paper-texture.png');
+  background-repeat: repeat;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* ---------------------------- */
+/* Typography                   */
+/* ---------------------------- */
+body h1, body h2, body h3, body h4 {
+  font-family: Georgia, serif;
+  margin-bottom: calc(var(--space-unit) * 0.5);
+  color: var(--color-accent);
+}
+p, li, label {
+  margin-bottom: var(--space-unit);
+}
+
+/* ---------------------------- */
+/* Layout Utilities             */
+/* ---------------------------- */
+.container {
+  width: 90%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 var(--space-unit);
+}
+.d-flex { display: flex; }
+.flex-column { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.justify-between { justify-content: space-between; }
+.align-center { align-items: center; }
+
+/* ---------------------------- */
+/* Links & Buttons              */
+/* ---------------------------- */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--color-primary);
+  transition: color var(--transition), border-color var(--transition);
+}
+a:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.btn {
+  display: inline-block;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  transition: background var(--transition);
+}
+.btn:hover {
+  background: var(--color-accent);
+}
+
+/* ---------------------------- */
+/* Forms                         */
+/* ---------------------------- */
+input, textarea, select, button {
+  font-family: inherit;
+}
+input, textarea, select {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  margin-bottom: var(--space-unit);
+}
+
+/* ---------------------------- */
+/* Flash Messages               */
+/* ---------------------------- */
+.flash {
+  padding: 1em;
+  margin: var(--space-unit) 0;
+  border-radius: 4px;
+  transition: opacity var(--transition);
+}
+.flash.success {
+  background: #CCDDC1;
+  color: var(--color-text);
+}
+.flash.error {
+  background: #D78258;
+  color: var(--color-bg);
+}
+
+/* ---------------------------- */
+/* Responsive Breakpoints       */
+/* ---------------------------- */
+@media (min-width: 600px) {
+  .container { max-width: 540px; }
+}
+@media (min-width: 768px) {
+  .container { max-width: 720px; }
+}
+@media (min-width: 1024px) {
+  .container { max-width: 960px; }
+}
