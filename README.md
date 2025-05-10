@@ -130,4 +130,4 @@ Timestamped logs in storage/logs/app.log
 
 - Views tested via output buffering
 
-Thank you for using literary-repo! Feel free to open issues or PRs on GitHub.
+Thank you for using CMSC 126_Literary-Repo! Feel free to open issues or PRs on GitHub.
