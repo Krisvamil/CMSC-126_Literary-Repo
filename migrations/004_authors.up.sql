@@ -1,0 +1,10 @@
+-- migrations/004_authors.up.sql
+
+START TRANSACTION;
+CREATE TABLE IF NOT EXISTS `authors` (
+  `id`       INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `user_id`  INT UNSIGNED NOT NULL UNIQUE,
+  `bio`      TEXT,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+COMMIT;
