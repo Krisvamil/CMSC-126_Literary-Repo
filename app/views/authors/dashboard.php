@@ -1,13 +1,30 @@
-<?php $title = 'Reader Dashboard'; $pageStyles = ['readers.css']; $pageScripts = ['readers.js']; ?>
-<?php ob_start(); ?>
+<?php
+$title       = 'Author Dashboard';
+$pageStyles  = ['authors.css'];
+$pageScripts = ['authors.js'];
 
-<section class="readers-dashboard">
-    <h1>Your Favorites & Following</h1>
-    <ul class="favorite-works">
-        <?php foreach ($favorites as $work): ?>
-            <li><?= htmlspecialchars($work['title']) ?></li>
+// Buffer the page content
+ob_start();
+?>
+<section class="authors-dashboard">
+    <h1>Your Works & Stats</h1>
+
+    <h2>Your Published Works</h2>
+    <ul class="author-works">
+        <?php foreach ($works as $work): ?>
+            <li><?= htmlspecialchars($work['title'], ENT_QUOTES) ?></li>
         <?php endforeach; ?>
     </ul>
-</section>
 
-<?php $content = ob_get_clean(); require __DIR__ . '/../layout.php'; ?>
+    <h2>Statistics</h2>
+    <ul class="author-stats">
+        <li>Total Works: <?= (int) $stats['total_works'] ?></li>
+        <li>Total Comments: <?= (int) $stats['total_comments'] ?></li>
+        <li>Followers: <?= (int) $stats['followers'] ?></li>
+    </ul>
+</section>
+<?php
+$content = ob_get_clean();
+
+// Hand off to layout.php, which injects the CSP nonce into all <script> tags
+require __DIR__ . '/../layout.php';
