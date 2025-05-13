@@ -1,6 +1,11 @@
-<?php $title = 'Login'; $pageStyles = ['auth.css']; $pageScripts = ['auth.js']; ?>
-<?php ob_start(); ?>
+<?php
+$title       = 'Login';
+$pageStyles  = ['auth.css'];
+$pageScripts = ['auth.js'];
 
+// Buffer the page content
+ob_start();
+?>
 <section class="auth-container">
     <h1>Login</h1>
     <form action="<?= BASE_URL ?>/auth/login" method="POST">
@@ -13,5 +18,8 @@
         <button type="submit">Login</button>
     </form>
 </section>
+<?php
+$content = ob_get_clean();
 
-<?php $content = ob_get_clean(); require __DIR__ . '/layout.php'; ?>
+// Hand off to layout.php, which takes care of CSP nonce & headers
+require __DIR__ . '/layout.php';
