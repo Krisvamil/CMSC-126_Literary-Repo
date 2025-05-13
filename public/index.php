@@ -2,11 +2,13 @@
 declare(strict_types=1);
 
 // -----------------------------------------------------------------------------
-// ENVIRONMENT SETTINGS (DEV ONLY — disable in production)
+// 0. ENVIRONMENT SETTINGS (Toggle error reporting via .env or runtime flag)
 // -----------------------------------------------------------------------------
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
+$isDev = ($_ENV['APP_ENV'] ?? 'production') === 'development';
+
+ini_set('display_errors', $isDev ? '1' : '0');
+ini_set('display_startup_errors', $isDev ? '1' : '0');
+error_reporting($isDev ? E_ALL : 0);
 
 // -----------------------------------------------------------------------------
 // 1. START SESSION
@@ -16,7 +18,15 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // -----------------------------------------------------------------------------
-// 2. CORS HANDLING: Preflight & Simple Requests
+// 2. FORCE HTTPS EARLY
+// -----------------------------------------------------------------------------
+if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off') {
+    header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], true, 301);
+    exit;
+}
+
+// -----------------------------------------------------------------------------
+// 3. CORS HANDLING: Preflight & Simple Requests
 // -----------------------------------------------------------------------------
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
 header("Access-Control-Allow-Origin: {$origin}");
@@ -30,14 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // -----------------------------------------------------------------------------
-// 3. GENERATE CSP NONCE
+// 4. GENERATE CSP NONCE & HEADERS
 // -----------------------------------------------------------------------------
 $nonce = base64_encode(random_bytes(16));
 $GLOBALS['csp_nonce'] = $nonce;
 
-// -----------------------------------------------------------------------------
-// 4. SEND SECURITY HEADERS (INCLUDING DYNAMIC CSP)
-// -----------------------------------------------------------------------------
 $cspDirectives = [
     "default-src 'self';",
     "script-src 'self' 'nonce-{$nonce}';",
@@ -58,17 +65,10 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Cross-Origin-Opener-Policy: same-origin');
 header('X-XSS-Protection: 1; mode=block');
 header('X-Permitted-Cross-Domain-Policies: none');
+header('Content-Type: text/html; charset=utf-8');
 
 // -----------------------------------------------------------------------------
-// 5. FORCE HTTPS
-// -----------------------------------------------------------------------------
-if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off') {
-    header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], true, 301);
-    exit;
-}
-
-// -----------------------------------------------------------------------------
-// 6. DISALLOW UNSUPPORTED HTTP METHODS
+// 5. DISALLOW UNSUPPORTED METHODS
 // -----------------------------------------------------------------------------
 $method = $_SERVER['REQUEST_METHOD'];
 if (in_array($method, ['TRACE', 'TRACK'], true)) {
@@ -77,7 +77,7 @@ if (in_array($method, ['TRACE', 'TRACK'], true)) {
 }
 
 // -----------------------------------------------------------------------------
-// 7. BOOTSTRAP APPLICATION
+// 6. BOOTSTRAP APP
 // -----------------------------------------------------------------------------
 require __DIR__ . '/../vendor/autoload.php';
 $config = require __DIR__ . '/../config/config.php';
@@ -85,41 +85,57 @@ date_default_timezone_set($config['timezone'] ?? 'UTC');
 require __DIR__ . '/../config/db.php';
 
 // -----------------------------------------------------------------------------
-// 8. RESOLVE REQUEST URI
+// 7. PARSE REQUEST URI
 // -----------------------------------------------------------------------------
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $requestUri = '/' . trim(preg_replace('#^/public#', '', $requestUri), '/');
 
 // -----------------------------------------------------------------------------
-// 9. LOAD ROUTES
+// 8. LOAD ROUTES
 // -----------------------------------------------------------------------------
 $routes = [];
-foreach (glob(__DIR__ . '/../app/routes/*.php', GLOB_NOSORT) as $file) {
+foreach (glob(__DIR__ . '/../app/routes/*.php') as $file) {
     $routes = array_merge($routes, require $file);
 }
 
 // -----------------------------------------------------------------------------
-// 10. DISPATCH REQUEST
+// 9. DISPATCH ROUTE
 // -----------------------------------------------------------------------------
 try {
     $handled = false;
+
     foreach ($routes as $route) {
-        if (empty($route['method']) || empty($route['pattern']) || empty($route['controller']) || empty($route['action'])) {
+        if (
+            !isset($route['method'], $route['pattern'], $route['controller'], $route['action'])
+        ) {
             continue;
         }
+
         if (strcasecmp($route['method'], $method) !== 0) {
             continue;
         }
+
         if (preg_match($route['pattern'], $requestUri, $matches)) {
             array_shift($matches);
+
             $className = "\\App\\Controllers\\{$route['controller']}";
+            if (!class_exists($className)) {
+                throw new RuntimeException("Controller not found: {$className}");
+            }
+
             $controller = new $className();
+
+            if (!method_exists($controller, $route['action'])) {
+                throw new RuntimeException("Action '{$route['action']}' not found in controller {$className}");
+            }
+
             call_user_func_array([$controller, $route['action']], $matches);
             $handled = true;
             break;
         }
     }
-    if (! $handled) {
+
+    if (!$handled) {
         http_response_code(404);
         include __DIR__ . '/../app/views/errors/404.php';
     }
